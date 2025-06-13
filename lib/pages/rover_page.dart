@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/nasa_api_service.dart';
+import 'package:lottie/lottie.dart';
 
 class RoverPageContent extends StatefulWidget {
   final String roverName;
@@ -45,8 +46,12 @@ class _RoverPageContentState extends State<RoverPageContent> {
   Widget build(BuildContext context) {
     return Center(
       child: isLoading
-          ? const CircularProgressIndicator()
-          : error != null
+          ? Lottie.asset(
+        'assets/rover.json',
+        width: 100,
+        height: 100,
+        fit: BoxFit.contain,
+      ) : error != null
           ? Text('Erreur : $error')
           : SingleChildScrollView(
         padding: const EdgeInsets.all(16),

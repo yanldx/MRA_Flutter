@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'app_drawer.dart';  // ton drawer
+import 'menu_page.dart';  // ton drawer
 
-class MainScaffold extends StatelessWidget {
+class Template extends StatelessWidget {
   final Widget body;
   final String title;
 
-  const MainScaffold({Key? key, required this.body, required this.title}) : super(key: key);
+  const Template({Key? key, required this.body, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class MainScaffold extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      drawer: AppDrawer(),
+      drawer: Menu(),
       body: body,
     );
   }

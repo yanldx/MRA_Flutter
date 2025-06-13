@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'template.dart';
+import 'template_page.dart';
 import '../pages/rover_page.dart';
+import 'package:lottie/lottie.dart';
 
-class AppDrawer extends StatelessWidget {
+class Menu extends StatelessWidget {
   final List<String> rovers = ['Spirit', 'Opportunity', 'Curiosity'];
 
   @override
@@ -19,7 +20,13 @@ class AppDrawer extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/fusee.png', width: 80, height: 80),
+                  Lottie.asset(
+                    'assets/rocket.json',
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(height: 10),
                   Text(
                     'Mars Rover',
                     style: TextStyle(color: Colors.black87, fontSize: 24),
@@ -49,7 +56,7 @@ class AppDrawer extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => MainScaffold(
+                      builder: (_) => Template(
                         title: rover,
                         body: RoverPageContent(roverName: rover),
                       ),
