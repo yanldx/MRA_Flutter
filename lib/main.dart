@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './widgets/template.dart';
+import './widgets/template_page.dart';
 import 'pages/rover_page.dart';
 
 void main() {
@@ -13,15 +13,15 @@ class MarsRoverApp extends StatelessWidget {
       title: 'Mars Rover API',
       initialRoute: '/Spirit', // ← par défaut sur Spirit
       routes: {
-        '/Spirit': (context) => MainScaffold(
+        '/Spirit': (context) => Template(
           title: 'Spirit',
           body: RoverPageContent(roverName: 'Spirit'),
         ),
-        '/Opportunity': (context) => MainScaffold(
+        '/Opportunity': (context) => Template(
           title: 'Opportunity',
           body: RoverPageContent(roverName: 'Opportunity'),
         ),
-        '/Curiosity': (context) => MainScaffold(
+        '/Curiosity': (context) => Template(
           title: 'Curiosity',
           body: RoverPageContent(roverName: 'Curiosity'),
         ),

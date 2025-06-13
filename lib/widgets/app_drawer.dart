@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'template.dart';
+import 'template_page.dart';
 import '../pages/rover_page.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -32,7 +32,7 @@ class AppDrawer extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: Divider(
                 thickness: 1,
-                color: Colors.grey,
+                color: Colors.grey[300],
               ),
             ),
             SizedBox(height: 40),
@@ -49,7 +49,7 @@ class AppDrawer extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => MainScaffold(
+                      builder: (_) => Template(
                         title: rover,
                         body: RoverPageContent(roverName: rover),
                       ),
