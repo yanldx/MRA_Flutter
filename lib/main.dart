@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/home_page.dart';
+import './widgets/template.dart';
 import 'pages/rover_page.dart';
 
 void main() {
@@ -11,14 +11,23 @@ class MarsRoverApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mars Rover API',
-      theme: ThemeData(primarySwatch: Colors.deepOrange),
-      initialRoute: '/',
+      initialRoute: '/Spirit', // ← par défaut sur Spirit
       routes: {
-        '/': (context) => HomePage(),
-        '/Spirit': (context) => RoverPage(roverName: 'Spirit'),
-        '/Opportunity': (context) => RoverPage(roverName: 'Opportunity'),
-        '/Curiosity': (context) => RoverPage(roverName: 'Curiosity'),
+        '/Spirit': (context) => MainScaffold(
+          title: 'Spirit',
+          body: RoverPageContent(roverName: 'Spirit'),
+        ),
+        '/Opportunity': (context) => MainScaffold(
+          title: 'Opportunity',
+          body: RoverPageContent(roverName: 'Opportunity'),
+        ),
+        '/Curiosity': (context) => MainScaffold(
+          title: 'Curiosity',
+          body: RoverPageContent(roverName: 'Curiosity'),
+        ),
       },
+
+      home: RoverPageContent(roverName: 'Spirit'), // fallback si needed
     );
   }
 }
