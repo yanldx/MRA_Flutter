@@ -6,30 +6,49 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: Colors.deepOrange),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/fusee.png', width: 30, height: 30),
-                SizedBox(height: 10),
-                Text('Rover', style: TextStyle(color: Colors.white, fontSize: 18)),
-              ],
+      child: Container(
+        color: Colors.red[50], // Couleur uniforme très claire sur tout le menu
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 40, left: 16, right: 16, bottom: 16),
+              color: Colors.red[50], // même couleur que le drawer
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/fusee.png', width: 60, height: 60),
+                  SizedBox(height: 10),
+                  Text(
+                    'Mars Rover',
+                    style: TextStyle(color: Colors.black87, fontSize: 24),
+                  ),
+                ],
+              ),
             ),
-          ),
-          ...rovers.map((rover) {
-            return ListTile(
-              title: Center(child: Text(rover)),
-              onTap: () {
-                Navigator.pop(context); // Ferme le menu
-                Navigator.pushNamed(context, '/$rover'); // Redirige vers la page correspondante
-              },
-            );
-          }).toList(),
-        ],
+            SizedBox(height: 40),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: Divider(
+                thickness: 1,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(height: 40),
+            ...rovers.map((rover) {
+              return ListTile(
+                title: Text(
+                  rover,
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/$rover');
+                },
+              );
+            }).toList(),
+          ],
+        ),
       ),
     );
   }
