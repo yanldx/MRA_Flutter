@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/app_drawer.dart';
+import '../widgets/menu_page.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Mars Rover API'),
       ),
-      drawer: AppDrawer(),
+      drawer: Menu(),
       body: Center(
         child: Text('Bienvenue sur l\'application Mars Rover'),
       ),

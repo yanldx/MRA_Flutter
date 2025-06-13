@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_drawer.dart';  // ton drawer
+import 'menu_page.dart';  // ton drawer
 
 class Template extends StatelessWidget {
   final Widget body;
@@ -13,7 +13,7 @@ class Template extends StatelessWidget {
       appBar: AppBar(
         title: Text('Mars Rover Photos'),
       ),
-      drawer: AppDrawer(),
+      drawer: Menu(),
       body: body,
     );
   }
