@@ -66,22 +66,16 @@ class _RoverPageState extends State<RoverPage> {
       fontWeight: FontWeight.bold,
       color: Colors.black,
     );
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.roverName)),
-      body: Center(
-        child: isLoading
-            ? CircularProgressIndicator()
-            : Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      'Welcome to the Mars Rover API app! Select a rover to view its photos.',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                  // Rover infos
-                  Container(
+    return Center(
+      child: isLoading
+          ? CircularProgressIndicator()
+          : Column(
+              children: [
+                // Rover infos
+                Material(
+                  elevation: 6,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
@@ -191,82 +185,82 @@ class _RoverPageState extends State<RoverPage> {
                       ],
                     ),
                   ),
-                  // List of grouped photo by sol
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: sortedPhotosBySol.length,
-                      itemBuilder: (context, index) {
-                        final photo = sortedPhotosBySol[index];
-                        // ...existing code...
-                        return ListTile(
-                          title: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Sol ${photo["sol"]}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25,
-                                      color: const Color.fromARGB(
-                                        255,
-                                        71,
-                                        167,
-                                        151,
-                                      ),
+                ),
+                // List of grouped photo by sol
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: sortedPhotosBySol.length,
+                    itemBuilder: (context, index) {
+                      final photo = sortedPhotosBySol[index];
+                      // ...existing code...
+                      return ListTile(
+                        title: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Sol ${photo["sol"]}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      71,
+                                      167,
+                                      151,
                                     ),
                                   ),
                                 ),
                               ),
-                              Expanded(
-                                flex: 3,
-                                child: Center(
-                                  child: Text('on ${photo["earth_date"]}'),
-                                ),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: Center(
+                                child: Text('on ${photo["earth_date"]}'),
                               ),
-                              Expanded(
-                                flex: 1,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    '${photo["total_photos"]}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      color: const Color.fromARGB(
-                                        255,
-                                        200,
-                                        15,
-                                        15,
-                                      ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  '${photo["total_photos"]}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      200,
+                                      15,
+                                      15,
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          onTap: () async {
-                            final sol = photo["sol"];
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SolPhotoPage(
-                                  roverName: widget.roverName,
-                                  sol: sol,
-                                ),
+                            ),
+                          ],
+                        ),
+                        onTap: () async {
+                          final sol = photo["sol"];
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SolPhotoPage(
+                                roverName: widget.roverName,
+                                sol: sol,
                               ),
-                            );
-                          },
-                        );
-                        // ...existing code...
-                      },
-                    ),
+                            ),
+                          );
+                        },
+                      );
+                      // ...existing code...
+                    },
                   ),
-                ],
-              ),
-      ),
+                ),
+              ],
+            ),
     );
   }
 }

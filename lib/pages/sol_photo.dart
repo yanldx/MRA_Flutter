@@ -22,6 +22,7 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
     fetchPhotos();
   }
 
+  // rendre paramètre page dynamique, ajouter 2 boutons prev et next en bas de page qui modifie le numPage passé en paramètre et reload la page
   Future<void> fetchPhotos() async {
     final response = await http.get(
       Uri.parse(
