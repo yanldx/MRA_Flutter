@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'sol_photo.dart';
 
 class RoverPage extends StatefulWidget {
   final String roverName;
@@ -26,7 +27,7 @@ class _RoverPageState extends State<RoverPage> {
     try {
       final response = await http.get(
         Uri.parse(
-          'https://api.nasa.gov/mars-photos/api/v1/manifests/${widget.roverName}?api_key=UFiFpneTkxOvAyI54FkvojpKUNFMLnMLCfnaUiVs',
+          'https://api.nasa.gov/mars-photos/api/v1/manifests/${widget.roverName}?api_key=os3SUbs6XsaafeHHibwqf5oeIfBE3SScU7gi2IZp',
         ),
       );
       if (response.statusCode == 200) {
@@ -79,6 +80,7 @@ class _RoverPageState extends State<RoverPage> {
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
+                  // Rover infos
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
@@ -189,6 +191,7 @@ class _RoverPageState extends State<RoverPage> {
                       ],
                     ),
                   ),
+                  // List of grouped photo by sol
                   Expanded(
                     child: ListView.builder(
                       itemCount: sortedPhotosBySol.length,
@@ -244,11 +247,14 @@ class _RoverPageState extends State<RoverPage> {
                               ),
                             ],
                           ),
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Sol ${photo["sol"]} sélectionné',
+                          onTap: () async {
+                            final sol = photo["sol"];
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SolPhotoPage(
+                                  roverName: widget.roverName,
+                                  sol: sol,
                                 ),
                               ),
                             );
