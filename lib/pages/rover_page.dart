@@ -14,6 +14,7 @@ class RoverPage extends StatefulWidget {
 class _RoverPageState extends State<RoverPage> {
   dynamic roverData;
   bool isLoading = true;
+  List<dynamic> sortedPhotosBySol = [];
 
   @override
   void initState() {
@@ -31,6 +32,15 @@ class _RoverPageState extends State<RoverPage> {
       if (response.statusCode == 200) {
         setState(() {
           roverData = jsonDecode(response.body);
+
+          // Trie les photos par sol
+          if (roverData != null &&
+              roverData["photo_manifest"] != null &&
+              roverData["photo_manifest"]["photos"] != null) {
+            List photos = roverData["photo_manifest"]["photos"];
+            photos.sort((a, b) => a["sol"].compareTo(b["sol"]));
+            sortedPhotosBySol = photos;
+          }
         });
       } else {
         setState(() {
@@ -177,6 +187,75 @@ class _RoverPageState extends State<RoverPage> {
                           ],
                         ),
                       ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: sortedPhotosBySol.length,
+                      itemBuilder: (context, index) {
+                        final photo = sortedPhotosBySol[index];
+                        // ...existing code...
+                        return ListTile(
+                          title: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Sol ${photo["sol"]}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 25,
+                                      color: const Color.fromARGB(
+                                        255,
+                                        71,
+                                        167,
+                                        151,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Center(
+                                  child: Text('on ${photo["earth_date"]}'),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    '${photo["total_photos"]}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: const Color.fromARGB(
+                                        255,
+                                        200,
+                                        15,
+                                        15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Sol ${photo["sol"]} sélectionné',
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                        // ...existing code...
+                      },
                     ),
                   ),
                 ],
