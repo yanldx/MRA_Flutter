@@ -15,6 +15,10 @@ class SolPhotoPage extends StatefulWidget {
 class _SolPhotoPageState extends State<SolPhotoPage> {
   bool isLoading = true;
   List<dynamic> photoData = [];
+  int currentPage = 1;
+  int totalPhotos = 0;
+  int totalPages = 1;
+  final int photosPerPage = 25;
 
   @override
   void initState() {
@@ -22,18 +26,28 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
     fetchPhotos();
   }
 
-  // rendre paramètre page dynamique, ajouter 2 boutons prev et next en bas de page qui modifie le numPage passé en paramètre et reload la page
   Future<void> fetchPhotos() async {
+    setState(() {
+      isLoading = true;
+    });
+
     final response = await http.get(
       Uri.parse(
-        'https://api.nasa.gov/mars-photos/api/v1/rovers/${widget.roverName}/photos?sol=${widget.sol}&page=1&api_key=os3SUbs6XsaafeHHibwqf5oeIfBE3SScU7gi2IZp',
+        'https://api.nasa.gov/mars-photos/api/v1/rovers/${widget.roverName}/photos?sol=${widget.sol}&page=$currentPage&api_key=os3SUbs6XsaafeHHibwqf5oeIfBE3SScU7gi2IZp',
       ),
     );
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data);
       setState(() {
         photoData = data["photos"];
+        if (totalPhotos == 0) {
+          // On suppose que le nombre total est approximatif car l'API ne retourne pas total exact
+          totalPhotos = photoData.length < photosPerPage && currentPage == 1
+              ? photoData.length
+              : currentPage * photosPerPage;
+          totalPages = (totalPhotos / photosPerPage).ceil();
+        }
         isLoading = false;
       });
     } else {
@@ -41,21 +55,51 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
       setState(() {
         isLoading = false;
       });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur lors du chargement des photos')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur lors du chargement des photos')),
+      );
+    }
+  }
+
+  void _goToNextPage() {
+    setState(() {
+      currentPage++;
+    });
+    fetchPhotos();
+  }
+
+  void _goToPreviousPage() {
+    if (currentPage > 1) {
+      setState(() {
+        currentPage--;
+      });
+      fetchPhotos();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sol ${widget.sol} of ${widget.roverName}')),
+      appBar: AppBar(
+        title: Text(
+          '${widget.roverName} - Sol ${widget.sol} - $totalPhotos photos',
+          style: TextStyle(fontSize: 16),
+        ),
+      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
+          : Column(
+        children: [
+          SizedBox(height: 12),
+          Text(
+            'Page $currentPage / $totalPages',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Expanded(
+            child: photoData.isEmpty
+                ? Center(child: Text('Aucune photo trouvée.'))
+                : ListView.builder(
               itemCount: photoData.length,
               itemBuilder: (context, index) {
                 return Padding(
@@ -69,22 +113,42 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
                         fit: BoxFit.cover,
                         width: 200,
                         height: 200,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              color: Colors.red,
-                              size: 48,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Container(
+                              color: Colors.grey[300],
+                              child: const Center(
+                                child: Icon(
+                                  Icons.broken_image,
+                                  color: Colors.red,
+                                  size: 48,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                       ),
                     ),
                   ),
                 );
               },
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: currentPage > 1 ? _goToPreviousPage : null,
+                child: Text('Précédent'),
+              ),
+              ElevatedButton(
+                onPressed: photoData.length == photosPerPage
+                    ? _goToNextPage
+                    : null,
+                child: Text('Suivant'),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+        ],
+      ),
     );
   }
 }

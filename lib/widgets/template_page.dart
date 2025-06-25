@@ -12,7 +12,7 @@ class Template extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange[100],
-        title: Text(title),
+        title: Text("Mars Rover Photo"),
       ),
       drawer: Menu(),
       body: body,
