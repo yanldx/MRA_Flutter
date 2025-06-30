@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'sol_photo.dart';
+import 'package:lottie/lottie.dart';
 
 class RoverPage extends StatefulWidget {
   final String roverName;
@@ -34,7 +35,6 @@ class _RoverPageState extends State<RoverPage> {
         setState(() {
           roverData = jsonDecode(response.body);
 
-          // Trie les photos par sol
           if (roverData != null &&
               roverData["photo_manifest"] != null &&
               roverData["photo_manifest"]["photos"] != null) {
@@ -45,12 +45,12 @@ class _RoverPageState extends State<RoverPage> {
         });
       } else {
         setState(() {
-          roverData = null; // Ou gère l’erreur comme tu veux
+          roverData = null;
         });
       }
     } catch (e) {
       setState(() {
-        roverData = null; // Ou gère l’erreur comme tu veux
+        roverData = null;
       });
     } finally {
       setState(() {
@@ -68,10 +68,14 @@ class _RoverPageState extends State<RoverPage> {
     );
     return Center(
       child: isLoading
-          ? CircularProgressIndicator()
+          ? Lottie.asset(
+        'assets/rover.json',
+        width: 80,
+        height: 80,
+        fit: BoxFit.contain,
+      )
           : Column(
               children: [
-                // Rover infos
                 Material(
                   elevation: 6,
                   borderRadius: BorderRadius.circular(8),
@@ -192,7 +196,6 @@ class _RoverPageState extends State<RoverPage> {
                     itemCount: sortedPhotosBySol.length,
                     itemBuilder: (context, index) {
                       final photo = sortedPhotosBySol[index];
-                      // ...existing code...
                       return ListTile(
                         title: Row(
                           children: [

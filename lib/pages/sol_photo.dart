@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:lottie/lottie.dart';
 
 class SolPhotoPage extends StatefulWidget {
   final int sol;
@@ -23,7 +24,48 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
   @override
   void initState() {
     super.initState();
-    fetchPhotos();
+    fetchManifestAndPhotos();
+  }
+
+  Future<void> fetchManifestAndPhotos() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // Obtenir le manifeste pour récupérer totalPhotos
+      final manifestUrl =
+          'https://api.nasa.gov/mars-photos/api/v1/manifests/${widget.roverName}?api_key=os3SUbs6XsaafeHHibwqf5oeIfBE3SScU7gi2IZp';
+      final manifestResponse = await http.get(Uri.parse(manifestUrl));
+
+      if (manifestResponse.statusCode == 200) {
+        final manifestData = jsonDecode(manifestResponse.body);
+        final photosList = manifestData["photo_manifest"]["photos"];
+        final solData = photosList.firstWhere(
+              (item) => item["sol"] == widget.sol,
+          orElse: () => null,
+        );
+
+        if (solData != null) {
+          totalPhotos = solData["total_photos"];
+          totalPages = (totalPhotos / photosPerPage).ceil();
+        } else {
+          totalPhotos = 0;
+          totalPages = 1;
+        }
+
+        await fetchPhotos();
+      } else {
+        throw Exception('Erreur lors du chargement du manifeste');
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur : ${e.toString()}')),
+      );
+    }
   }
 
   Future<void> fetchPhotos() async {
@@ -36,7 +78,7 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
         'https://api.nasa.gov/mars-photos/api/v1/rovers/${widget.roverName}/photos?sol=${widget.sol}&page=$currentPage&api_key=os3SUbs6XsaafeHHibwqf5oeIfBE3SScU7gi2IZp',
       ),
     );
-
+    print('URL : https://api.nasa.gov/mars-photos/api/v1/rovers/${widget.roverName}/photos?sol=${widget.sol}&page=$currentPage&api_key=os3SUbs6XsaafeHHibwqf5oeIfBE3SScU7gi2IZp',);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       setState(() {
@@ -62,10 +104,12 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
   }
 
   void _goToNextPage() {
-    setState(() {
-      currentPage++;
-    });
-    fetchPhotos();
+    if (currentPage < totalPages) {
+      setState(() {
+        currentPage++;
+      });
+      fetchPhotos();
+    }
   }
 
   void _goToPreviousPage() {
@@ -87,7 +131,14 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
         ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+        child: Lottie.asset(
+          'assets/rover.json',
+          width: 80,
+          height: 80,
+          fit: BoxFit.contain,
+        ),
+      )
           : Column(
         children: [
           SizedBox(height: 12),
@@ -108,22 +159,39 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
                     borderRadius: BorderRadius.circular(12),
                     child: AspectRatio(
                       aspectRatio: 1.5,
-                      child: Image.network(
-                        photoData[index]["img_src"],
-                        fit: BoxFit.cover,
-                        width: 200,
-                        height: 200,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Container(
-                              color: Colors.grey[300],
-                              child: const Center(
-                                child: Icon(
-                                  Icons.broken_image,
-                                  color: Colors.red,
-                                  size: 48,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Image.network(
+                              photoData[index]["img_src"],
+                              fit: BoxFit.cover,
+                              width: 200,
+                              height: 200,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                color: Colors.grey[300],
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    color: Colors.red,
+                                    size: 48,
+                                  ),
                                 ),
                               ),
                             ),
+                          ),
+                          Positioned(
+                            top: 8,
+                            left: 8,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              color: Colors.black.withOpacity(0.7),
+                              child: Text(
+                                photoData[index]['camera']['name'],
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -131,6 +199,7 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
               },
             ),
           ),
+          SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -139,9 +208,7 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
                 child: Text('Précédent'),
               ),
               ElevatedButton(
-                onPressed: photoData.length == photosPerPage
-                    ? _goToNextPage
-                    : null,
+                onPressed: currentPage < totalPages ? _goToNextPage : null,
                 child: Text('Suivant'),
               ),
             ],
