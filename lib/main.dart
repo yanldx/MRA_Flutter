@@ -11,7 +11,7 @@ class MarsRoverApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mars Rover API',
-      initialRoute: '/Spirit', // ← par défaut sur Spirit
+      initialRoute: '/Spirit', // Affichage de Spirit par défaut
       routes: {
         '/Spirit': (context) => Template(
           title: 'Spirit',
@@ -27,7 +27,7 @@ class MarsRoverApp extends StatelessWidget {
         ),
       },
 
-      home: RoverPage(roverName: 'Spirit'), // fallback si needed
+      home: RoverPage(roverName: 'Spirit'),
     );
   }
 }

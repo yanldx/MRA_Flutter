@@ -24,6 +24,7 @@ class _RoverPageState extends State<RoverPage> {
     fetchRoverData();
   }
 
+// Affiche les infos du rover passé en paramètre
   Future<void> fetchRoverData() async {
     try {
       final response = await http.get(
@@ -190,7 +191,6 @@ class _RoverPageState extends State<RoverPage> {
                     ),
                   ),
                 ),
-                // List of grouped photo by sol
                 Expanded(
                   child: ListView.builder(
                     itemCount: sortedPhotosBySol.length,
@@ -258,7 +258,6 @@ class _RoverPageState extends State<RoverPage> {
                           );
                         },
                       );
-                      // ...existing code...
                     },
                   ),
                 ),

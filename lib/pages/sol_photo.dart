@@ -27,13 +27,13 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
     fetchManifestAndPhotos();
   }
 
+// Récupère le manifeste et les photos du sol passé en paramètre
   Future<void> fetchManifestAndPhotos() async {
     setState(() {
       isLoading = true;
     });
 
     try {
-      // Obtenir le manifeste pour récupérer totalPhotos
       final manifestUrl =
           'https://api.nasa.gov/mars-photos/api/v1/manifests/${widget.roverName}?api_key=os3SUbs6XsaafeHHibwqf5oeIfBE3SScU7gi2IZp';
       final manifestResponse = await http.get(Uri.parse(manifestUrl));
@@ -68,6 +68,7 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
     }
   }
 
+// Récupère les photos du sol passé en paramètre
   Future<void> fetchPhotos() async {
     setState(() {
       isLoading = true;
@@ -103,6 +104,7 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
     }
   }
 
+// Passe à la page suivante
   void _goToNextPage() {
     if (currentPage < totalPages) {
       setState(() {
@@ -112,6 +114,7 @@ class _SolPhotoPageState extends State<SolPhotoPage> {
     }
   }
 
+// Passe à la page précédente
   void _goToPreviousPage() {
     if (currentPage > 1) {
       setState(() {

@@ -50,7 +50,7 @@ class Menu extends StatelessWidget {
                   style: TextStyle(fontSize: 18, color: Colors.black),
                 ),
                 onTap: () {
-                  Navigator.pop(context); // ferme le drawer
+                  Navigator.pop(context);
 
                   // Navigation vers une nouvelle page avec le template
                   Navigator.push(

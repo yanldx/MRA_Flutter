@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+// Service pour récupérer les données du rover
 class NasaApiService {
   static const String _baseUrl = 'https://api.nasa.gov/mars-photos/api/v1/manifests';
   static const String _apiKey = 'UFiFpneTkxOvAyI54FkvojpKUNFMLnMLCfnaUiVs';
